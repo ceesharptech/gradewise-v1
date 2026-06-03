@@ -1,0 +1,78 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "CU_Admin",
+      "password_hash": "$2b$12$H.uewWGz7zO0g3jhbbLt1.uRSrh/5BwZ5D6bp5kjq0CN/apIjKeTG",
+      "role": "admin",
+      "full_name": "System Admin",
+      "email": "admin@spps.com",
+      "active": true,
+      "must_change_pw": false,
+      "created_at": "2026-05-26T12:01:08.633421",
+      "scheme": {
+        "num_tests": 1,
+        "num_assignments": 1,
+        "weights": {
+          "exam": 60,
+          "tests": 20,
+          "assignments": 10,
+          "attendance": 10
+        },
+        "grade_boundaries": {
+          "A": 70,
+          "B": 60,
+          "C": 50,
+          "D": 45
+        },
+        "pass_mark": 45
+      },
+      "email_settings": {
+        "notifications_enabled": false,
+        "recipient_email": "",
+        "smtp_server": "smtp.gmail.com",
+        "smtp_port": 587,
+        "sender_email": "",
+        "sender_password": "",
+        "threshold": 10
+      }
+    },
+    {
+      "id": 2,
+      "username": "ay.oduroye",
+      "password_hash": "$2b$12$.U2fBXCqrYUb0uOJeHpRZOd/mZUjaDAsGXey7bvuKdUNzkLFd9JCi",
+      "role": "lecturer",
+      "full_name": "Dr Ayorinde Oduroye",
+      "email": "ayorinde.oduroye@calebuniversity.edu.ng",
+      "active": true,
+      "must_change_pw": false,
+      "created_at": "2026-05-26T12:07:17.145919",
+      "scheme": {
+        "num_tests": 3,
+        "num_assignments": 3,
+        "weights": {
+          "exam": 60,
+          "tests": 20,
+          "assignments": 10,
+          "attendance": 10
+        },
+        "grade_boundaries": {
+          "A": 70,
+          "B": 60,
+          "C": 50,
+          "D": 45
+        },
+        "pass_mark": 45
+      },
+      "email_settings": {
+        "notifications_enabled": true,
+        "threshold": 10,
+        "recipient_email": "feranmiabajo@gmail.com",
+        "sender_email": "eniolaamusu6@gmail.com",
+        "sender_password": "gfcv ooot iubi ehqg",
+        "smtp_server": "smtp.gmail.com",
+        "smtp_port": 587
+      }
+    }
+  ]
+}

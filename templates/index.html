@@ -1,0 +1,1469 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Performance Prediction System</title>
+
+    <!-- Geist Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+    <!-- App Styles -->
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+
+  <body>
+    <!-- ═══════════════════════════════════════════════════════
+     APP SHELL
+═══════════════════════════════════════════════════════ -->
+    <div class="app-shell">
+      <!-- ── SIDEBAR ─────────────────────────────────────── -->
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-icon">GW</div>
+          <span class="brand-name">GRADEWISE</span>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a
+            class="nav-item active"
+            data-tab="dashboard"
+            onclick="showTab('dashboard', this)"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+            </svg>
+            <span>Dashboard</span>
+          </a>
+          <a
+            class="nav-item"
+            data-tab="upload"
+            onclick="showTab('upload', this)"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            <span>Bulk Upload</span>
+          </a>
+          <a
+            class="nav-item"
+            data-tab="predict"
+            onclick="showTab('predict', this)"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <span>Single Prediction</span>
+          </a>
+          <a
+            class="nav-item"
+            data-tab="students"
+            onclick="showTab('students', this)"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 00-3-3.87" />
+              <path d="M16 3.13a4 4 0 010 7.75" />
+            </svg>
+            <span>All Students</span>
+          </a>
+          <a
+            class="nav-item"
+            data-tab="reports"
+            onclick="showTab('reports', this)"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+              <polyline points="10 9 9 9 8 9" />
+            </svg>
+            <span>Reports</span>
+          </a>
+          <a
+            class="nav-item"
+            data-tab="settings"
+            onclick="showTab('settings', this)"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83
+                   0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4
+                   0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83
+                   -2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4
+                   h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83
+                   l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65
+                   1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06
+                   A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65
+                   0 00-1.51 1z"
+              />
+            </svg>
+            <span>Settings</span>
+          </a>
+          <!-- Admin only -->
+          <a
+            class="nav-item nav-admin hidden"
+            data-tab="admin"
+            onclick="showTab('admin', this)"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            <span>Admin Panel</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="sidebar-footer-info">
+            <div class="footer-avatar" id="nav-avatar">A</div>
+            <div>
+              <p class="footer-name" id="nav-fullname">Loading…</p>
+              <p class="footer-sub" id="nav-role">—</p>
+            </div>
+          </div>
+          <button class="btn-footer-logout" onclick="doLogout()">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="14"
+              height="14"
+            >
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Sign Out
+          </button>
+          <button class="btn-clear-all" onclick="clearData()">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="14"
+              height="14"
+            >
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+              <path d="M10 11v6" />
+              <path d="M14 11v6" />
+            </svg>
+            Clear Data
+          </button>
+        </div>
+      </aside>
+
+      <!-- ── MAIN CONTENT ─────────────────────────────────── -->
+      <main class="main-content">
+        <!-- ══ DASHBOARD ══════════════════════════════════ -->
+        <section id="tab-dashboard" class="tab-section">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Dashboard</h1>
+              <p class="page-sub">
+                Here's an overview of how your students are doing
+              </p>
+            </div>
+            <div id="upload-badge" class="hidden upload-badge">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                width="13"
+                height="13"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              <span id="upload-badge-text">No uploads yet</span>
+            </div>
+          </div>
+
+          <!-- Stat cards -->
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-card-top">
+                <span class="stat-label">Total Students</span>
+                <div class="stat-icon stat-icon-blue">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                    <path d="M16 3.13a4 4 0 010 7.75" />
+                  </svg>
+                </div>
+              </div>
+              <p class="stat-value" id="d-total">0</p>
+              <p class="stat-delta" id="d-pass-delta"></p>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-top">
+                <span class="stat-label">Pass Rate</span>
+                <div class="stat-icon stat-icon-green">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </div>
+              </div>
+              <p class="stat-value" id="d-pass">0%</p>
+              <p class="stat-delta" id="d-pass-sub"></p>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-top">
+                <span class="stat-label">Need Support</span>
+                <div class="stat-icon stat-icon-red">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                    />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>
+                </div>
+              </div>
+              <p class="stat-value" id="d-risk">0</p>
+              <p class="stat-delta delta-neg" id="d-risk-sub"></p>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-top">
+                <span class="stat-label">Average Score</span>
+                <div class="stat-icon stat-icon-purple">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <line x1="18" y1="20" x2="18" y2="10" />
+                    <line x1="12" y1="20" x2="12" y2="4" />
+                    <line x1="6" y1="20" x2="6" y2="14" />
+                  </svg>
+                </div>
+              </div>
+              <p class="stat-value" id="d-avg">0.00</p>
+              <p class="stat-delta" id="d-avg-sub"></p>
+            </div>
+          </div>
+
+          <!-- Charts row -->
+          <div class="charts-grid">
+            <div class="chart-card chart-card-wide">
+              <div class="chart-card-header">
+                <div>
+                  <h3 class="chart-title">Grade Distribution</h3>
+                  <p class="chart-sub">Number of students per grade level</p>
+                </div>
+              </div>
+              <div class="chart-body">
+                <canvas id="gradeChart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div>
+                  <h3 class="chart-title">Pass / Fail</h3>
+                  <p class="chart-sub">Distribution of outcomes</p>
+                </div>
+              </div>
+              <div class="chart-body chart-donut-body">
+                <canvas id="pfChart"></canvas>
+              </div>
+              <div class="donut-legend" id="donut-legend"></div>
+            </div>
+          </div>
+
+          <!-- Score breakdown summary -->
+          <div class="card" id="score-breakdown-card" style="display: none">
+            <h3 class="card-title">Score Thresholds &amp; Pass Criteria</h3>
+            <div class="threshold-grid">
+              <div class="threshold-item">
+                <span class="threshold-grade grade-a">A</span>
+                <span class="threshold-range">70 – 100</span>
+              </div>
+              <div class="threshold-item">
+                <span class="threshold-grade grade-b">B</span>
+                <span class="threshold-range">60 – 69</span>
+              </div>
+              <div class="threshold-item">
+                <span class="threshold-grade grade-c">C</span>
+                <span class="threshold-range">50 – 59</span>
+              </div>
+              <div class="threshold-item">
+                <span class="threshold-grade grade-d">D</span>
+                <span class="threshold-range">45 – 49</span>
+              </div>
+              <div class="threshold-item">
+                <span class="threshold-grade grade-f">F</span>
+                <span class="threshold-range">0 – 44</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          <div id="dash-empty" class="empty-state">
+            <div class="empty-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                width="40"
+                height="40"
+              >
+                <path d="M3 3h18v18H3z" rx="2" />
+                <path d="M3 9h18M9 21V9" />
+              </svg>
+            </div>
+            <p class="empty-title">No data available</p>
+            <p class="empty-sub">
+              Upload a student file or make a single prediction to get started
+            </p>
+            <button
+              class="btn btn-primary"
+              onclick="
+                showTab('upload', document.querySelector('[data-tab=upload]'))
+              "
+            >
+              Upload File
+            </button>
+          </div>
+        </section>
+
+        <!-- ══ BULK UPLOAD ══════════════════════════════════ -->
+        <section id="tab-upload" class="tab-section hidden">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Bulk Upload</h1>
+              <p class="page-sub">
+                Upload a CSV or Excel file to process multiple students at once
+              </p>
+            </div>
+            <button class="btn btn-outline" onclick="downloadTemplate()">
+              Download Template
+            </button>
+          </div>
+
+          <div class="upload-grid">
+            <!-- Format guide -->
+            <div class="card">
+              <h3 class="card-title">File Format</h3>
+              <p class="card-sub">
+                Your file must contain the following column headers exactly as
+                shown.
+              </p>
+              <div class="format-table">
+                <div class="format-row format-header">
+                  <span>Column</span><span>Type</span><span>Required</span>
+                </div>
+                <div class="format-row">
+                  <span>student_id</span><span>Text</span>
+                  <span class="badge badge-grey">Optional</span>
+                </div>
+                <div class="format-row">
+                  <span>student_name</span><span>Text</span>
+                  <span class="badge badge-green">Required</span>
+                </div>
+                <div class="format-row">
+                  <span>attendance</span><span>0–100</span>
+                  <span class="badge badge-green">Required</span>
+                </div>
+                <div class="format-row">
+                  <span>test1, test2, test3</span><span>0–100</span>
+                  <span class="badge badge-green">Required</span>
+                </div>
+                <div class="format-row">
+                  <span>assignment1, 2, 3</span><span>0–100</span>
+                  <span class="badge badge-green">Required</span>
+                </div>
+                <div class="format-row">
+                  <span>exam_score</span><span>0–100</span>
+                  <span class="badge badge-green">Required</span>
+                </div>
+              </div>
+              <div class="info-box">
+                All numeric values must be between 0 and 100. Rows with invalid
+                data will be flagged.
+              </div>
+              <div class="weight-breakdown">
+                <p class="weight-title">Grading Weights</p>
+                <div class="weight-bars">
+                  <div class="weight-row">
+                    <span>Exam</span>
+                    <div class="weight-bar-bg">
+                      <div
+                        class="weight-bar-fill"
+                        style="width: 60%; background: #2563eb"
+                      ></div>
+                    </div>
+                    <span>60%</span>
+                  </div>
+                  <div class="weight-row">
+                    <span>Tests</span>
+                    <div class="weight-bar-bg">
+                      <div
+                        class="weight-bar-fill"
+                        style="width: 20%; background: #7c3aed"
+                      ></div>
+                    </div>
+                    <span>20%</span>
+                  </div>
+                  <div class="weight-row">
+                    <span>Assignments</span>
+                    <div class="weight-bar-bg">
+                      <div
+                        class="weight-bar-fill"
+                        style="width: 10%; background: #16a34a"
+                      ></div>
+                    </div>
+                    <span>10%</span>
+                  </div>
+                  <div class="weight-row">
+                    <span>Attendance</span>
+                    <div class="weight-bar-bg">
+                      <div
+                        class="weight-bar-fill"
+                        style="width: 10%; background: #d97706"
+                      ></div>
+                    </div>
+                    <span>10%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upload zone -->
+            <div class="card upload-card">
+              <div
+                id="drop-zone"
+                class="drop-zone"
+                onclick="document.getElementById('file-input').click()"
+                ondragover="dragOver(event)"
+                ondragleave="dragLeave(event)"
+                ondrop="dropFile(event)"
+              >
+                <div class="drop-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    width="36"
+                    height="36"
+                  >
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                  </svg>
+                </div>
+                <p class="drop-title">Drag and drop your file here</p>
+                <p class="drop-sub">or click to browse files</p>
+                <p class="drop-types">CSV, XLSX, XLS supported</p>
+                <input
+                  type="file"
+                  id="file-input"
+                  class="hidden"
+                  accept=".csv,.xlsx,.xls"
+                  onchange="handleFileSelect(event)"
+                />
+              </div>
+
+              <div id="file-info" class="file-info hidden">
+                <div class="file-info-left">
+                  <div class="file-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      width="18"
+                      height="18"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                      />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p id="file-name" class="file-name"></p>
+                    <p id="file-size" class="file-size"></p>
+                  </div>
+                </div>
+                <button onclick="clearFile()" class="file-remove">
+                  Remove
+                </button>
+              </div>
+
+              <div id="upload-progress" class="upload-progress hidden">
+                <div class="progress-header">
+                  <span>Processing file...</span>
+                  <span id="progress-pct">0%</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" id="progress-fill"></div>
+                </div>
+              </div>
+
+              <button
+                id="upload-btn"
+                onclick="uploadFile()"
+                disabled
+                class="btn btn-primary btn-full btn-disabled"
+              >
+                Process File
+              </button>
+
+              <div id="upload-result" class="upload-result hidden"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ SINGLE PREDICTION ════════════════════════════ -->
+        <section id="tab-predict" class="tab-section hidden">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Single Prediction</h1>
+              <p class="page-sub">
+                Enter a student's scores to generate an instant performance
+                prediction
+              </p>
+            </div>
+          </div>
+
+          <div class="predict-grid">
+            <!-- Form -->
+            <div class="card">
+              <h3 class="card-title">Student Details</h3>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label"
+                    >Student Name <span class="required">*</span></label
+                  >
+                  <input
+                    id="p-name"
+                    type="text"
+                    placeholder="e.g. John Doe"
+                    class="form-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Student ID</label>
+                  <input
+                    id="p-id"
+                    type="text"
+                    placeholder="e.g. 2023001"
+                    class="form-input"
+                  />
+                </div>
+              </div>
+
+              <div class="form-divider">
+                <span>Exam Score <span class="weight-tag">60%</span></span>
+              </div>
+              <div class="slider-group">
+                <div class="slider-label">
+                  <span>Exam Score</span>
+                  <span class="slider-val" id="lbl-exam">75</span>
+                </div>
+                <input
+                  type="range"
+                  id="p-exam"
+                  min="0"
+                  max="100"
+                  value="75"
+                  class="slider slider-blue"
+                  oninput="updateLabel('lbl-exam', 'p-exam')"
+                />
+              </div>
+
+              <div class="form-divider">
+                <span>Test Scores <span class="weight-tag">20%</span></span>
+              </div>
+              <div class="slider-row-3">
+                <div class="slider-group" id="t1-group">
+                  <div class="slider-label">
+                    <span>Test 1</span
+                    ><span class="slider-val" id="lbl-t1">70</span>
+                  </div>
+                  <input
+                    type="range"
+                    id="p-t1"
+                    min="0"
+                    max="100"
+                    value="70"
+                    class="slider slider-purple"
+                    oninput="updateLabel('lbl-t1', 'p-t1')"
+                  />
+                </div>
+                <div class="slider-group">
+                  <div class="slider-label">
+                    <span>Test 2</span
+                    ><span class="slider-val" id="lbl-t2">70</span>
+                  </div>
+                  <input
+                    type="range"
+                    id="p-t2"
+                    min="0"
+                    max="100"
+                    value="70"
+                    class="slider slider-purple"
+                    oninput="updateLabel('lbl-t2', 'p-t2')"
+                  />
+                </div>
+                <div class="slider-group">
+                  <div class="slider-label">
+                    <span>Test 3</span
+                    ><span class="slider-val" id="lbl-t3">70</span>
+                  </div>
+                  <input
+                    type="range"
+                    id="p-t3"
+                    min="0"
+                    max="100"
+                    value="70"
+                    class="slider slider-purple"
+                    oninput="updateLabel('lbl-t3', 'p-t3')"
+                  />
+                </div>
+              </div>
+
+              <div class="form-divider">
+                <span
+                  >Assignment Scores <span class="weight-tag">10%</span></span
+                >
+              </div>
+              <div class="slider-row-3">
+                <div class="slider-group">
+                  <div class="slider-label">
+                    <span>Assignment 1</span
+                    ><span class="slider-val" id="lbl-a1">80</span>
+                  </div>
+                  <input
+                    type="range"
+                    id="p-a1"
+                    min="0"
+                    max="100"
+                    value="80"
+                    class="slider slider-green"
+                    oninput="updateLabel('lbl-a1', 'p-a1')"
+                  />
+                </div>
+                <div class="slider-group">
+                  <div class="slider-label">
+                    <span>Assignment 2</span
+                    ><span class="slider-val" id="lbl-a2">80</span>
+                  </div>
+                  <input
+                    type="range"
+                    id="p-a2"
+                    min="0"
+                    max="100"
+                    value="80"
+                    class="slider slider-green"
+                    oninput="updateLabel('lbl-a2', 'p-a2')"
+                  />
+                </div>
+                <div class="slider-group">
+                  <div class="slider-label">
+                    <span>Assignment 3</span
+                    ><span class="slider-val" id="lbl-a3">80</span>
+                  </div>
+                  <input
+                    type="range"
+                    id="p-a3"
+                    min="0"
+                    max="100"
+                    value="80"
+                    class="slider slider-green"
+                    oninput="updateLabel('lbl-a3', 'p-a3')"
+                  />
+                </div>
+              </div>
+
+              <div class="form-divider">
+                <span>Attendance <span class="weight-tag">10%</span></span>
+              </div>
+              <div class="slider-group">
+                <div class="slider-label">
+                  <span>Attendance (%)</span>
+                  <span class="slider-val" id="lbl-att">85</span>
+                </div>
+                <input
+                  type="range"
+                  id="p-att"
+                  min="0"
+                  max="100"
+                  value="85"
+                  class="slider slider-amber"
+                  oninput="updateLabel('lbl-att', 'p-att')"
+                />
+              </div>
+
+              <button
+                onclick="submitSingle()"
+                class="btn btn-primary btn-full"
+                style="margin-top: 1.5rem"
+              >
+                Generate Prediction
+              </button>
+            </div>
+
+            <!-- Result -->
+            <div id="predict-empty" class="card predict-empty-state">
+              <div class="empty-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  width="36"
+                  height="36"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </div>
+              <p class="empty-title">No prediction yet</p>
+              <p class="empty-sub">
+                Fill in the form and click Generate Prediction
+              </p>
+            </div>
+
+            <div id="predict-result" class="hidden">
+              <div class="card result-score-card">
+                <p class="result-label">Predicted Final Score</p>
+                <p class="result-big-score" id="r-score">--</p>
+                <p class="result-score-sub" id="r-score-sub">out of 100</p>
+              </div>
+
+              <div class="result-badges-grid">
+                <div class="result-badge-card" id="r-grade-card">
+                  <p class="result-badge-label">Grade</p>
+                  <p class="result-badge-val" id="r-grade">--</p>
+                </div>
+                <div class="result-badge-card" id="r-pf-card">
+                  <p class="result-badge-label">Status</p>
+                  <p class="result-badge-val" id="r-pf">--</p>
+                </div>
+                <div class="result-badge-card" id="r-risk-card">
+                  <p class="result-badge-label">At-Risk</p>
+                  <p class="result-badge-val" id="r-risk">--</p>
+                </div>
+              </div>
+
+              <div class="card">
+                <h4 class="card-title">Component Breakdown</h4>
+                <div id="r-breakdown" class="breakdown-list"></div>
+              </div>
+
+              <div id="r-risk-box" class="alert-box alert-danger hidden">
+                <div class="alert-title">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    width="16"
+                    height="16"
+                  >
+                    <path
+                      d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                    />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>
+                  Risk Factors Identified
+                </div>
+                <ul id="r-risk-list" class="alert-list"></ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ ALL STUDENTS ═════════════════════════════════ -->
+        <section id="tab-students" class="tab-section hidden">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">All Students</h1>
+              <p class="page-sub" id="students-count-sub">No students loaded</p>
+            </div>
+            <div class="table-actions">
+              <div class="search-box">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  width="15"
+                  height="15"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input
+                  id="search-input"
+                  type="text"
+                  placeholder="Search by name or ID"
+                  class="search-input"
+                  oninput="filterStudents()"
+                />
+              </div>
+              <select
+                id="filter-grade"
+                class="form-select"
+                onchange="filterStudents()"
+              >
+                <option value="">All Grades</option>
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+                <option>D</option>
+                <option>F</option>
+              </select>
+              <select
+                id="filter-risk"
+                class="form-select"
+                onchange="filterStudents()"
+              >
+                <option value="">All Students</option>
+                <option value="Yes">At-Risk Only</option>
+                <option value="No">Not At-Risk</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card table-card">
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Exam</th>
+                    <th>Avg Test</th>
+                    <th>Avg Asgn</th>
+                    <th>Attendance</th>
+                    <th>Final Score</th>
+                    <th>Grade</th>
+                    <th>Pass/Fail</th>
+                    <th>At-Risk</th>
+                    <th>Report</th>
+                  </tr>
+                </thead>
+                <tbody id="students-table"></tbody>
+              </table>
+            </div>
+            <div id="students-empty" class="empty-state">
+              <div class="empty-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  width="36"
+                  height="36"
+                >
+                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                </svg>
+              </div>
+              <p class="empty-title">No students found</p>
+              <p class="empty-sub">Upload a file or adjust your filters</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ REPORTS ══════════════════════════════════════ -->
+        <section id="tab-reports" class="tab-section hidden">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Reports</h1>
+              <p class="page-sub">Generate and download performance reports</p>
+            </div>
+          </div>
+
+          <div class="reports-grid">
+            <div class="card report-card">
+              <div class="report-card-icon report-icon-green">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  width="24"
+                  height="24"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <path d="M3 9h18M3 15h18M9 3v18" />
+                </svg>
+              </div>
+              <h3 class="report-card-title">Class Performance Report</h3>
+              <p class="report-card-sub">
+                Exports all student predictions, summary statistics, grade
+                distribution chart, and a dedicated at-risk student list into a
+                multi-sheet Excel workbook.
+              </p>
+              <ul class="report-features">
+                <li>All Students sheet with complete data</li>
+                <li>Summary sheet with statistics and chart</li>
+                <li>At-Risk Students sheet</li>
+                <li>Colour-coded grades and statuses</li>
+              </ul>
+              <button
+                onclick="exportClassExcel()"
+                class="btn btn-success btn-full"
+              >
+                Download Class Report (Excel)
+              </button>
+            </div>
+
+            <div class="card report-card">
+              <div class="report-card-icon report-icon-blue">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  width="24"
+                  height="24"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                  />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
+              </div>
+              <h3 class="report-card-title">Individual Student Report</h3>
+              <p class="report-card-sub">
+                Generates a detailed A4 PDF report for a single student,
+                including a full score breakdown, component scores, grade,
+                pass/fail status, and identified risk factors.
+              </p>
+              <div class="form-group" style="margin-top: auto">
+                <label class="form-label">Select Student</label>
+                <select
+                  id="pdf-student-select"
+                  class="form-select form-select-full"
+                >
+                  <option value="">Select a student</option>
+                </select>
+              </div>
+              <button
+                onclick="exportStudentPDF()"
+                class="btn btn-primary btn-full"
+                style="margin-top: 1rem"
+              >
+                Download Student Report (PDF)
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ SETTINGS ════════════════════════════════════ -->
+        <section id="tab-settings" class="tab-section hidden">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Settings</h1>
+              <p class="page-sub">
+                Configure your grading scheme and notification preferences
+              </p>
+            </div>
+          </div>
+
+          <div class="settings-grid">
+            <!-- Grading Scheme -->
+            <div class="card settings-card">
+              <h3 class="card-title">Grading Scheme</h3>
+              <p class="card-sub">
+                Changes apply to all future uploads and predictions.
+              </p>
+
+              <div class="settings-section-title">Number of Assessments</div>
+              <div class="form-row-2" style="margin-bottom: 18px">
+                <div class="form-group">
+                  <label class="form-label">Number of Tests</label>
+                  <select
+                    id="sc-num-tests"
+                    class="form-select form-select-full"
+                    onchange="updateSchemeUI()"
+                  >
+                    <option value="1">1 Test</option>
+                    <option value="2">2 Tests</option>
+                    <option value="3" selected>3 Tests</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Number of Assignments</label>
+                  <select
+                    id="sc-num-assignments"
+                    class="form-select form-select-full"
+                    onchange="updateSchemeUI()"
+                  >
+                    <option value="1">1 Assignment</option>
+                    <option value="2">2 Assignments</option>
+                    <option value="3" selected>3 Assignments</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="settings-section-title">
+                Grade Weights
+                <span
+                  id="weight-sum-badge"
+                  class="weight-sum-badge weight-sum-ok"
+                  >Total: 100%</span
+                >
+              </div>
+              <div class="weight-bars" style="margin-bottom: 18px">
+                <div class="weight-row weight-row-input">
+                  <span>Exam</span>
+                  <input
+                    id="sw-exam"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value="60"
+                    class="weight-input"
+                    oninput="recalcWeightSum()"
+                  />
+                  <span>%</span>
+                </div>
+                <div class="weight-row weight-row-input">
+                  <span>Tests</span>
+                  <input
+                    id="sw-tests"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value="20"
+                    class="weight-input"
+                    oninput="recalcWeightSum()"
+                  />
+                  <span>%</span>
+                </div>
+                <div class="weight-row weight-row-input">
+                  <span>Assignments</span>
+                  <input
+                    id="sw-assignments"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value="10"
+                    class="weight-input"
+                    oninput="recalcWeightSum()"
+                  />
+                  <span>%</span>
+                </div>
+                <div class="weight-row weight-row-input">
+                  <span>Attendance</span>
+                  <input
+                    id="sw-attendance"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value="10"
+                    class="weight-input"
+                    oninput="recalcWeightSum()"
+                  />
+                  <span>%</span>
+                </div>
+              </div>
+
+              <div class="settings-section-title">Grade Boundaries</div>
+              <div class="grade-boundary-grid" style="margin-bottom: 18px">
+                <div class="gb-item">
+                  <span class="threshold-grade grade-a">A</span>
+                  <input
+                    id="gb-a"
+                    type="number"
+                    class="weight-input"
+                    value="70"
+                  />
+                  <span>and above</span>
+                </div>
+                <div class="gb-item">
+                  <span class="threshold-grade grade-b">B</span>
+                  <input
+                    id="gb-b"
+                    type="number"
+                    class="weight-input"
+                    value="60"
+                  />
+                  <span>and above</span>
+                </div>
+                <div class="gb-item">
+                  <span class="threshold-grade grade-c">C</span>
+                  <input
+                    id="gb-c"
+                    type="number"
+                    class="weight-input"
+                    value="50"
+                  />
+                  <span>and above</span>
+                </div>
+                <div class="gb-item">
+                  <span class="threshold-grade grade-d">D</span>
+                  <input
+                    id="gb-d"
+                    type="number"
+                    class="weight-input"
+                    value="45"
+                  />
+                  <span>and above</span>
+                </div>
+              </div>
+
+              <div
+                class="form-group"
+                style="max-width: 200px; margin-bottom: 20px"
+              >
+                <label class="form-label">Pass Mark</label>
+                <input
+                  id="sc-pass-mark"
+                  type="number"
+                  min="0"
+                  max="100"
+                  value="45"
+                  class="form-input"
+                />
+              </div>
+
+              <button onclick="saveScheme()" class="btn btn-primary">
+                Save Grading Scheme
+              </button>
+            </div>
+
+            <!-- Email Notifications -->
+            <div class="card settings-card">
+              <h3 class="card-title">Email Notifications</h3>
+              <p class="card-sub">
+                Receive alerts when at-risk students exceed your threshold.
+              </p>
+
+              <div class="toggle-row" style="margin-bottom: 18px">
+                <div>
+                  <p style="font-size: 13.5px; font-weight: 500">
+                    Enable Notifications
+                  </p>
+                  <p style="font-size: 12px; color: var(--text-muted)">
+                    Send email when at-risk count exceeds threshold
+                  </p>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="en-enabled" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 14px">
+                <label class="form-label">At-Risk Threshold</label>
+                <input
+                  id="en-threshold"
+                  type="number"
+                  min="1"
+                  max="200"
+                  value="10"
+                  class="form-input"
+                  style="max-width: 140px"
+                />
+                <p class="form-hint">
+                  Notify when more than this many students are at risk
+                </p>
+              </div>
+
+              <div class="settings-section-title">SMTP Configuration</div>
+              <div class="form-group" style="margin-bottom: 12px">
+                <label class="form-label">Recipient Email</label>
+                <input
+                  id="en-recipient"
+                  type="email"
+                  class="form-input"
+                  placeholder="lecturer@university.edu"
+                />
+              </div>
+              <div class="form-group" style="margin-bottom: 12px">
+                <label class="form-label">Sender Email (Gmail)</label>
+                <input
+                  id="en-sender"
+                  type="email"
+                  class="form-input"
+                  placeholder="alerts@gmail.com"
+                />
+              </div>
+              <div class="form-group" style="margin-bottom: 12px">
+                <label class="form-label">Gmail App Password</label>
+                <input
+                  id="en-password"
+                  type="password"
+                  class="form-input"
+                  placeholder="Leave blank to keep current"
+                />
+              </div>
+              <div class="form-row-2" style="margin-bottom: 20px">
+                <div class="form-group">
+                  <label class="form-label">SMTP Server</label>
+                  <input
+                    id="en-smtp"
+                    type="text"
+                    class="form-input"
+                    value="smtp.gmail.com"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">SMTP Port</label>
+                  <input
+                    id="en-port"
+                    type="number"
+                    class="form-input"
+                    value="587"
+                  />
+                </div>
+              </div>
+
+              <div class="flex-gap">
+                <button onclick="saveEmailSettings()" class="btn btn-primary">
+                  Save Settings
+                </button>
+                <button onclick="sendTestEmail()" class="btn btn-outline">
+                  Send Test Email
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ ADMIN PANEL ══════════════════════════════════ -->
+        <section id="tab-admin" class="tab-section hidden">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Admin Panel</h1>
+              <p class="page-sub">Manage lecturer accounts</p>
+            </div>
+            <button class="btn btn-primary" onclick="openAddLecturer()">
+              Add Lecturer
+            </button>
+          </div>
+
+          <div class="card table-card">
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Full Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-users-table"></tbody>
+              </table>
+            </div>
+            <div id="admin-users-empty" class="empty-state hidden">
+              <p class="empty-title">No lecturers yet</p>
+              <p class="empty-sub">
+                Click "Add Lecturer" to create the first account.
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Add Lecturer Modal -->
+    <div
+      id="modal-add-lecturer"
+      class="modal-overlay hidden"
+      onclick="handleModalClick(event, 'modal-add-lecturer')"
+    >
+      <div class="modal-box" style="max-width: 440px">
+        <div class="modal-header">
+          <div>
+            <h3 class="modal-title">Add Lecturer</h3>
+            <p class="modal-sub">
+              The lecturer will set their password on first login.
+            </p>
+          </div>
+          <button onclick="closeAddLecturer()" class="modal-close">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="20"
+              height="20"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div
+            id="add-lecturer-error"
+            class="alert-box alert-danger hidden"
+            style="margin-bottom: 12px"
+          >
+            <span id="add-lecturer-error-msg"></span>
+          </div>
+          <div class="form-group" style="margin-bottom: 12px">
+            <label class="form-label">Full Name</label>
+            <input
+              id="al-name"
+              type="text"
+              class="form-input"
+              placeholder="Dr. Jane Smith"
+            />
+          </div>
+          <div class="form-group" style="margin-bottom: 12px">
+            <label class="form-label">Username</label>
+            <input
+              id="al-username"
+              type="text"
+              class="form-input"
+              placeholder="dr.smith"
+            />
+          </div>
+          <div class="form-group" style="margin-bottom: 20px">
+            <label class="form-label">Email</label>
+            <input
+              id="al-email"
+              type="email"
+              class="form-input"
+              placeholder="smith@university.edu"
+            />
+          </div>
+          <button
+            onclick="submitAddLecturer()"
+            class="btn btn-primary btn-full"
+          >
+            Create Account
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     STUDENT DETAIL MODAL
+═══════════════════════════════════════════════════════ -->
+    <div
+      id="modal"
+      class="modal-overlay hidden"
+      onclick="handleModalClick(event)"
+    >
+      <div class="modal-box">
+        <div class="modal-header">
+          <div>
+            <h3 class="modal-title" id="modal-title">Student Details</h3>
+            <p class="modal-sub" id="modal-sub"></p>
+          </div>
+          <button onclick="closeModal()" class="modal-close">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="20"
+              height="20"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div id="modal-body" class="modal-body"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     TOAST
+═══════════════════════════════════════════════════════ -->
+    <div id="toast" class="toast hidden">
+      <span id="toast-icon"></span>
+      <span id="toast-msg"></span>
+    </div>
+
+    <!-- App Script -->
+    <script src="/static/js/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login — SPPS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body class="login-body">
+    <div class="login-shell">
+      <!-- Left panel -->
+      <div class="login-left">
+        <div class="login-left-inner">
+          <div class="login-brand">
+            <div
+              class="brand-icon"
+              style="width: 42px; height: 42px; font-size: 13px"
+            >
+              SP
+            </div>
+            <span class="brand-name" style="font-size: 18px; color: #fff"
+              >SPPS</span
+            >
+          </div>
+          <h1 class="login-headline">
+            Predict student<br />performance with<br />confidence.
+          </h1>
+          <p class="login-sub">
+            An AI-powered system built on Nigerian university grading standards
+            to help lecturers identify at-risk students early.
+          </p>
+          <div class="login-features">
+            <div class="login-feature">
+              <div class="login-feature-dot" style="background: #4ade80"></div>
+              <span>Bulk CSV / Excel upload</span>
+            </div>
+            <div class="login-feature">
+              <div class="login-feature-dot" style="background: #60a5fa"></div>
+              <span>Pass/Fail, Grade &amp; At-Risk predictions</span>
+            </div>
+            <div class="login-feature">
+              <div class="login-feature-dot" style="background: #f472b6"></div>
+              <span>Intervention recommendations</span>
+            </div>
+            <div class="login-feature">
+              <div class="login-feature-dot" style="background: #fb923c"></div>
+              <span>PDF &amp; Excel report exports</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right panel — form -->
+      <div class="login-right">
+        <div class="login-card">
+          <!-- Normal login -->
+          <div id="panel-login">
+            <h2 class="login-card-title">Welcome back</h2>
+            <p class="login-card-sub">Sign in to your account to continue</p>
+
+            <div
+              id="login-error"
+              class="alert-box alert-danger hidden"
+              style="margin-bottom: 16px"
+            >
+              <span id="login-error-msg"></span>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px">
+              <label class="form-label">Username</label>
+              <input
+                id="l-username"
+                type="text"
+                class="form-input"
+                placeholder="Enter your username"
+                autocomplete="username"
+                onkeydown="enterKey(event, 'login')"
+              />
+            </div>
+            <div class="form-group" style="margin-bottom: 20px">
+              <label class="form-label">Password</label>
+              <div class="input-eye-wrap">
+                <input
+                  id="l-password"
+                  type="password"
+                  class="form-input"
+                  placeholder="Enter your password"
+                  autocomplete="current-password"
+                  onkeydown="enterKey(event, 'login')"
+                />
+                <button
+                  type="button"
+                  class="input-eye"
+                  onclick="togglePw('l-password', this)"
+                >
+                  <svg
+                    id="eye-icon-l"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    width="16"
+                    height="16"
+                  >
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <button
+              onclick="doLogin()"
+              id="login-btn"
+              class="btn btn-primary btn-full"
+            >
+              Sign In
+            </button>
+          </div>
+
+          <!-- Set password (first login) -->
+          <div id="panel-set-pw" class="hidden">
+            <h2 class="login-card-title">Set Your Password</h2>
+            <p class="login-card-sub">
+              This is your first login. Please set a secure password to
+              continue.
+            </p>
+
+            <div
+              id="setpw-error"
+              class="alert-box alert-danger hidden"
+              style="margin-bottom: 16px"
+            >
+              <span id="setpw-error-msg"></span>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px">
+              <label class="form-label">New Password</label>
+              <div class="input-eye-wrap">
+                <input
+                  id="s-pw1"
+                  type="password"
+                  class="form-input"
+                  placeholder="At least 8 characters"
+                  onkeydown="enterKey(event, 'setpw')"
+                />
+                <button
+                  type="button"
+                  class="input-eye"
+                  onclick="togglePw('s-pw1', this)"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    width="16"
+                    height="16"
+                  >
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 20px">
+              <label class="form-label">Confirm Password</label>
+              <div class="input-eye-wrap">
+                <input
+                  id="s-pw2"
+                  type="password"
+                  class="form-input"
+                  placeholder="Re-enter password"
+                  onkeydown="enterKey(event, 'setpw')"
+                />
+                <button
+                  type="button"
+                  class="input-eye"
+                  onclick="togglePw('s-pw2', this)"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    width="16"
+                    height="16"
+                  >
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <button onclick="doSetPassword()" class="btn btn-primary btn-full">
+              Set Password &amp; Continue
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      async function doLogin() {
+        const btn = document.getElementById("login-btn");
+        const user = document.getElementById("l-username").value.trim();
+        const pass = document.getElementById("l-password").value;
+
+        if (!user || !pass) {
+          showError("login", "Please enter your username and password.");
+          return;
+        }
+
+        btn.textContent = "Signing in…";
+        btn.disabled = true;
+
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: user, password: pass }),
+        });
+        const data = await res.json();
+
+        btn.textContent = "Sign In";
+        btn.disabled = false;
+
+        if (!res.ok) {
+          showError("login", data.error);
+          return;
+        }
+
+        if (data.must_change_pw) {
+          document.getElementById("panel-login").classList.add("hidden");
+          document.getElementById("panel-set-pw").classList.remove("hidden");
+        } else {
+          window.location.href = "/";
+        }
+      }
+
+      async function doSetPassword() {
+        const p1 = document.getElementById("s-pw1").value;
+        const p2 = document.getElementById("s-pw2").value;
+        if (p1.length < 8) {
+          showError("setpw", "Password must be at least 8 characters.");
+          return;
+        }
+        if (p1 !== p2) {
+          showError("setpw", "Passwords do not match.");
+          return;
+        }
+
+        const res = await fetch("/api/auth/set-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: p1 }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showError("setpw", data.error);
+          return;
+        }
+        window.location.href = "/";
+      }
+
+      function showError(panel, msg) {
+        const box = document.getElementById(`${panel}-error`);
+        document.getElementById(`${panel}-error-msg`).textContent = msg;
+        box.classList.remove("hidden");
+      }
+
+      function togglePw(inputId, btn) {
+        const inp = document.getElementById(inputId);
+        inp.type = inp.type === "password" ? "text" : "password";
+      }
+
+      function enterKey(e, action) {
+        if (e.key === "Enter") action === "login" ? doLogin() : doSetPassword();
+      }
+    </script>
+  </body>
+</html>
