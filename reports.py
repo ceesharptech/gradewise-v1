@@ -35,7 +35,7 @@ GRADE_COLOURS = {'A': SUCCESS, 'B': SECONDARY,
 # ─────────────────────────────────────────────────────────────────────
 # INDIVIDUAL STUDENT PDF
 # ─────────────────────────────────────────────────────────────────────
-def generate_student_pdf(student: dict) -> io.BytesIO:
+def generate_student_pdf(student: dict, scheme: dict | None = None) -> io.BytesIO:
     buf = io.BytesIO()
     doc = SimpleDocTemplate(
         buf, pagesize=A4,
@@ -118,16 +118,26 @@ def generate_student_pdf(student: dict) -> io.BytesIO:
         filled = int((value / max_val) * width)
         return '█' * (filled // 8) + '░' * ((width - filled) // 8)
 
+    weights = scheme.get("weights", {}) if scheme else {}
+    w_exam = float(weights.get("exam", 60))
+    w_tests = float(weights.get("tests", 20))
+    w_asgn = float(weights.get("assignments", 10))
+    w_att = float(weights.get("attendance", 10))
+
     breakdown = [
         ['Component', 'Score', 'Weight', 'Contribution', 'Visual'],
         ['Exam Score',       f"{student['exam_score']:.1f}",
-         '60%', f"{student['exam_score']*0.6:.2f}", bar(student['exam_score'])],
+         f"{w_exam:.0f}%", f"{student['exam_score']*(w_exam/100):.2f}",
+         bar(student['exam_score'])],
         ['Average Tests',    f"{student['avg_test']:.1f}",
-         '20%', f"{student['avg_test']*0.2:.2f}",   bar(student['avg_test'])],
+         f"{w_tests:.0f}%", f"{student['avg_test']*(w_tests/100):.2f}",
+         bar(student['avg_test'])],
         ['Avg Assignments',  f"{student['avg_assignment']:.1f}",
-         '10%', f"{student['avg_assignment']*0.1:.2f}", bar(student['avg_assignment'])],
+         f"{w_asgn:.0f}%", f"{student['avg_assignment']*(w_asgn/100):.2f}",
+         bar(student['avg_assignment'])],
         ['Attendance',       f"{student['attendance']:.1f}%",
-         '10%', f"{student['attendance']*0.1:.2f}",  bar(student['attendance'])],
+         f"{w_att:.0f}%", f"{student['attendance']*(w_att/100):.2f}",
+         bar(student['attendance'])],
         ['', '', '', '', ''],
         ['FINAL SCORE', f"{student['final_score']:.2f}", '100%', '', ''],
     ]
@@ -154,17 +164,41 @@ def generate_student_pdf(student: dict) -> io.BytesIO:
     story.append(HRFlowable(width='100%', thickness=1, color=MID_GREY))
     story.append(Spacer(1, 6))
 
-    scores_data = [
-        ['Assessment', 'Score', 'Assessment', 'Score'],
-        ['Test 1',       f"{student['test1']:.1f}",
-         'Assignment 1', f"{student['assignment1']:.1f}"],
-        ['Test 2',       f"{student['test2']:.1f}",
-         'Assignment 2', f"{student['assignment2']:.1f}"],
-        ['Test 3',       f"{student['test3']:.1f}",
-         'Assignment 3', f"{student['assignment3']:.1f}"],
-        ['Avg Test',     f"{student['avg_test']:.2f}",
-         'Avg Assignment', f"{student['avg_assignment']:.2f}"],
-    ]
+    if scheme:
+        test_keys = [
+            f"test{i+1}"
+            for i in range(scheme.get("num_tests", 0))
+            if f"test{i+1}" in student
+        ]
+        asgn_keys = [
+            f"assignment{i+1}"
+            for i in range(scheme.get("num_assignments", 0))
+            if f"assignment{i+1}" in student
+        ]
+    else:
+        test_keys = sorted(
+            [k for k in student if k.startswith("test")],
+            key=lambda k: int(k.replace("test", "")) if k[4:].isdigit() else 0,
+        )
+        asgn_keys = sorted(
+            [k for k in student if k.startswith("assignment")],
+            key=lambda k: int(k.replace("assignment", "")) if k[10:].isdigit() else 0,
+        )
+
+    scores_data = [['Assessment', 'Score', 'Assessment', 'Score']]
+    for i in range(max(len(test_keys), len(asgn_keys))):
+        t_key = test_keys[i] if i < len(test_keys) else None
+        a_key = asgn_keys[i] if i < len(asgn_keys) else None
+        t_label = f"Test {i + 1}" if t_key else ""
+        a_label = f"Assignment {i + 1}" if a_key else ""
+        t_val = f"{float(student.get(t_key, 0)):.1f}" if t_key else ""
+        a_val = f"{float(student.get(a_key, 0)):.1f}" if a_key else ""
+        scores_data.append([t_label, t_val, a_label, a_val])
+
+    scores_data.append([
+        'Avg Test', f"{student.get('avg_test', 0):.2f}",
+        'Avg Assignment', f"{student.get('avg_assignment', 0):.2f}",
+    ])
     sc_table = Table(scores_data, colWidths=[4.5*cm, 3.5*cm, 4.5*cm, 4.5*cm])
     sc_table.setStyle(TableStyle([
         ('BACKGROUND',    (0,0), (-1,0), SECONDARY),
@@ -212,7 +246,7 @@ def generate_student_pdf(student: dict) -> io.BytesIO:
 # ─────────────────────────────────────────────────────────────────────
 # CLASS EXCEL EXPORT
 # ─────────────────────────────────────────────────────────────────────
-def generate_class_excel(students: list, stats: dict) -> io.BytesIO:
+def generate_class_excel(students: list, stats: dict, scheme: dict | None = None) -> io.BytesIO:
     buf = io.BytesIO()
     wb  = xlsxwriter.Workbook(buf, {'in_memory': True})
 

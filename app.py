@@ -202,6 +202,7 @@ def admin_create_user():
             full_name = d.get("full_name", "").strip(),
             username  = d.get("username",  "").strip(),
             email     = d.get("email",     "").strip(),
+            password  = d.get("password",  ""),
         )
         return jsonify(safe_user(user)), 201
     except ValueError as e:

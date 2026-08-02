@@ -35,6 +35,7 @@ DEFAULT_EMAIL_SETTINGS = {
     "threshold":             10
 }
 
+
 # ─────────────────────────────────────────────────────────────
 # FILE HELPERS
 # ─────────────────────────────────────────────────────────────
@@ -99,15 +100,17 @@ def authenticate(username: str, password: str) -> dict | None:
         return u
     return None
 
-def create_lecturer(full_name: str, username: str, email: str) -> dict:
+def create_lecturer(full_name: str, username: str, email: str, password: str) -> dict:
     data = _load()
     if any(u["username"] == username for u in data["users"]):
         raise ValueError(f"Username '{username}' already exists")
+    if not password or len(password) < 8:
+        raise ValueError("Password must be at least 8 characters")
     new_id = max((u["id"] for u in data["users"]), default=0) + 1
     user = {
         "id":             new_id,
         "username":       username,
-        "password_hash":  "",          # set on first login
+        "password_hash":  _hash(password),
         "role":           "lecturer",
         "full_name":      full_name,
         "email":          email,

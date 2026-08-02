@@ -898,7 +898,7 @@ function openAddLecturer() {
 }
 function closeAddLecturer() {
   document.getElementById("modal-add-lecturer").classList.add("hidden");
-  ["al-name", "al-username", "al-email"].forEach(
+  ["al-name", "al-username", "al-email", "al-password"].forEach(
     (id) => (document.getElementById(id).value = ""),
   );
   document.getElementById("add-lecturer-error").classList.add("hidden");
@@ -909,10 +909,22 @@ async function submitAddLecturer() {
     full_name: document.getElementById("al-name").value.trim(),
     username: document.getElementById("al-username").value.trim(),
     email: document.getElementById("al-email").value.trim(),
+    password: document.getElementById("al-password").value,
   };
-  if (!payload.full_name || !payload.username || !payload.email) {
+  if (
+    !payload.full_name ||
+    !payload.username ||
+    !payload.email ||
+    !payload.password
+  ) {
     document.getElementById("add-lecturer-error-msg").textContent =
       "All fields are required.";
+    document.getElementById("add-lecturer-error").classList.remove("hidden");
+    return;
+  }
+  if (payload.password.length < 8) {
+    document.getElementById("add-lecturer-error-msg").textContent =
+      "Password must be at least 8 characters.";
     document.getElementById("add-lecturer-error").classList.remove("hidden");
     return;
   }
